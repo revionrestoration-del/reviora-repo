@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "Service": {
+      "title": "Service",
+      "description": "A restoration or cleaning service item offered in the catalog",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "features": { "type": "array" },
+        "notes": { "type": "string", "maxLength": 500 },
+        "price": { "type": "number" },
+        "priceType": { "type": "string", "enum": ["fixed", "starting"] },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "imagePath": { "type": "string", "maxLength": 500 },
+        "isActive": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "category", "price", "priceType", "isActive"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Main restoration category (Shoes, Bags, Jackets, Belts, Caps)",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "displayOrder": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["name", "isActive"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "General website and business settings",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string", "maxLength": 100 },
+        "tagline": { "type": "string", "maxLength": 100 },
+        "whatsappNumber": { "type": "string", "maxLength": 30 },
+        "whatsappLink": { "type": "string", "maxLength": 200 },
+        "address": { "type": "string", "maxLength": 200 },
+        "facebookUrl": { "type": "string", "maxLength": 200 },
+        "instagramUrl": { "type": "string", "maxLength": 200 },
+        "logoUrl": { "type": "string", "maxLength": 500 },
+        "heroTitle": { "type": "string", "maxLength": 200 },
+        "heroDescription": { "type": "string", "maxLength": 1000 },
+        "heroBannerUrl": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["businessName", "whatsappNumber"]
+    },
+    "GalleryItem": {
+      "title": "GalleryItem",
+      "description": "Before and After restoration pair item",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 50 },
+        "beforeImageUrl": { "type": "string", "maxLength": 500 },
+        "afterImageUrl": { "type": "string", "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "isActive": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "beforeImageUrl", "afterImageUrl", "isActive"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Administrator user records",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/services/{serviceId}": {
+      "schema": "Service",
+      "description": "Restoration services catalog items"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Restoration product categories"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": "SiteSettings",
+      "description": "Reviora business and site configurations"
+    },
+    "/gallery/{galleryId}": {
+      "schema": "GalleryItem",
+      "description": "Before & After restoration showcases"
+    },
+    "/adminUsers/{uid}": {
+      "schema": "AdminUser",
+      "description": "Registered admin users"
+    },
+    "/admins/{uid}": {
+      "schema": "AdminUser",
+      "description": "Admin authorization mapping collection"
+    }
+  }
+}

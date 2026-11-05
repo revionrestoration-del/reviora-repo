@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'revion.restoration@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Catalog Services
+    match /services/{serviceId} {
+      allow get: if isValidId(serviceId) && (resource.data.isActive == true || isAdmin());
+      allow list: if (resource.data.isActive == true || isAdmin());
+      allow create, update, delete: if isValidId(serviceId) && isAdmin();
+    }
+
+    // Categories
+    match /categories/{categoryId} {
+      allow get: if isValidId(categoryId) && (resource.data.isActive == true || isAdmin());
+      allow list: if (resource.data.isActive == true || isAdmin());
+      allow create, update, delete: if isValidId(categoryId) && isAdmin();
+    }
+
+    // Site Settings (e.g. /siteSettings/general)
+    match /siteSettings/{settingId} {
+      allow get, list: if isValidId(settingId);
+      allow create, update, delete: if isValidId(settingId) && isAdmin();
+    }
+
+    // Restoration Before & After Gallery
+    match /gallery/{galleryId} {
+      allow get: if isValidId(galleryId) && (resource.data.isActive == true || isAdmin());
+      allow list: if (resource.data.isActive == true || isAdmin());
+      allow create, update, delete: if isValidId(galleryId) && isAdmin();
+    }
+
+    // Admin Access Management
+    match /admins/{uid} {
+      allow read, write: if isValidId(uid) && isAdmin();
+    }
+
+    match /adminUsers/{uid} {
+      allow read, write: if isValidId(uid) && isAdmin();
+    }
+  }
+}
